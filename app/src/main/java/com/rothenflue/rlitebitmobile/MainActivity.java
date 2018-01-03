@@ -6,7 +6,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.rothenflue.services.bdd.entities.Currency;
+import com.rothenflue.services.bdd.entities.CurrencyAvailability;
 import com.rothenflue.services.web.WebRequestService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 webService.sendGETWebRequest("https://api.litebit.eu/markets", new WebRequestService.ResponseListener() {
                     @Override
                     public void onResponse(String response) {
-                        etxtResult.setText(response);
+                        loadContent(response);
                     }
 
                     @Override
@@ -40,5 +47,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void loadContent(String response) {
+        etxtResult.setText(response);
+
+        try {
+            JSONObject reader = new JSONObject(response);
+            JSONObject result = reader.getJSONObject("result");
+
+            Iterator<?> keys = result.keys();
+
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                if (result.get(key) instanceof JSONObject) {
+                    JSONObject cur = result.getJSONObject(key);
+                    Currency c = new Currency();
+                    c.setName(cur.getString("name"));
+                    c.setAttr(cur.getString("abbr"));
+                    ((CustomApplication) getApplication()).getDaoService().setCurrency(c);
+                    CurrencyAvailability ca = new CurrencyAvailability();
+                    ca.setCurrencyId(c.getId());
+                    ca.setTimestamp(System.currentTimeMillis());
+                    ca.setAvailable(cur.getDouble("available"));
+                    ca.setVolume(cur.getDouble("volume"));
+                    ca.setBuy(cur.getDouble("buy"));
+                    ca.setSell(cur.getDouble("sell"));
+                    ((CustomApplication) getApplication()).getDaoService().setCurrencyAvailiability(ca);
+                }
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
