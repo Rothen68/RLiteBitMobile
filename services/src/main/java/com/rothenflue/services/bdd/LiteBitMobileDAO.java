@@ -1,7 +1,12 @@
-package com.rothenflue.services.bdd.entities;
+package com.rothenflue.services.bdd;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
+
+import com.rothenflue.services.bdd.entities.Currency;
+import com.rothenflue.services.bdd.entities.CurrencyAvailability;
+import com.rothenflue.services.bdd.entities.DaoMaster;
+import com.rothenflue.services.bdd.entities.DaoSession;
 
 /**
  * Created by apest on 03/01/2018.

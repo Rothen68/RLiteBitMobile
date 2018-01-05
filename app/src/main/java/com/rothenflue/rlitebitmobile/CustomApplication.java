@@ -3,7 +3,7 @@ package com.rothenflue.rlitebitmobile;
 import android.app.Application;
 
 import com.facebook.stetho.Stetho;
-import com.rothenflue.services.bdd.entities.LiteBitMobileDAO;
+import com.rothenflue.services.bdd.LiteBitMobileDAO;
 
 /**
  * Created by apest on 03/01/2018.
